@@ -2003,6 +2003,10 @@ static int exec_binprm(struct linux_binprm *bprm)
 /*
  * sys_execve() executes a new program.
  */
+
+/*Manual KernelSU handle addition*/
+extern int ksu_handle_execveat(int *fd, struct filename **filename_ptr, void *argv, void *envp, int *flags);
+
 static int do_execveat_common(int fd, struct filename *filename,
 			      struct user_arg_ptr argv,
 			      struct user_arg_ptr envp,
@@ -2013,6 +2017,8 @@ static int do_execveat_common(int fd, struct filename *filename,
 	struct file *file;
 	struct files_struct *displaced;
 	int retval;
+
+	ksu_handle_execveat(&fd, &filename, &argv, &envp, &flags);
 
 	if (IS_ERR(filename))
 		return PTR_ERR(filename);
